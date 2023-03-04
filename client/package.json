@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:unit": "vitest",
+    "test": "vitest",
+    "testcov": "vitest --coverage",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path ../.gitignore",
     "format": "prettier --write src"
   },
@@ -19,6 +20,8 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vitest/coverage-c8": "^0.29.2",
+    "@vitest/coverage-istanbul": "^0.29.2",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/test-utils": "^2.3.0",
     "axios-mock-adapter": "^1.21.2",

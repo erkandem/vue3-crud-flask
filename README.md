@@ -3,6 +3,12 @@
 Source: https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/
 Code: https://github.com/testdrivenio/flask-vue-crud
 
+follow ons:
+ - deployment: https://testdriven.io/blog/deploying-flask-to-heroku-with-docker-and-gitlab/
+ - checkout functionality: https://testdriven.io/blog/accepting-payments-with-stripe-vuejs-and-flask/
+ - very interesting 3 approaches: https://testdriven.io/blog/combine-flask-vue/
+
+
 ## 1 Objectives
 
 **Contents:**
@@ -23,13 +29,13 @@ Code: https://github.com/testdrivenio/flask-vue-crud
 
 | Tech       | Tutorial | My Setup     |
 |------------|----------|--------------|
-| Vue        | 2.6.11   |              |
+| Vue        | 2.6.11   | 3.2.47       |
 | Vue CLI    | 4.5.11   | -            |
 | Vite       | -        | 4.1.4        |
 | plugin-vue | -        | 1.9.0        |
 | Node       | 15.7.0   | 18.14.2      |
 | npm        | 7.4.3    | 9.5.0        |
-| Flask      | 1.1.2    |              |
+| Flask      | 1.1.2    | 2.2.3        |
 | Python     | 3.9.2    | 3.11.2       |
 
 
@@ -52,6 +58,7 @@ Sections:
 
 #### Flask
 ...
+
 #### Vue
 
 Comparison to other frameworks: https://vuejs.org/v2/guide/comparison.html
@@ -149,3 +156,25 @@ import './assets/css/main.css'
  - rendered the result in the target location in the template
  - extended the test of `CoreComponent` to use the axios library and it's mock-adapter
  - flush promises and await it before inspecting ;)
+
+
+### Code Coverage
+
+ - c8 can be used for code coverage stats
+ - there is a Vitest plugin to get it working
+```sh
+npm install @vitest/coverage-c8 --save-dev
+```
+ - added `"testcov": "vitest --coverage",` script to `package.json`
+ - static HTML and JSON on code coverage:
+```js
+// vitest.config.js
+//...
+    test: {
+       coverage: {
+          provider: 'c8', 
+          reporter: ['json', 'html']
+       }
+       //...
+    }
+```
