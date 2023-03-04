@@ -134,3 +134,18 @@ Finally, the `main.css` is imported into `main.js`
 ```js 
 import './assets/css/main.css'
 ```
+
+### Connecting to the API
+
+ - used `axios` to make "XHR" calls
+ - import that we used the `Flask-CORS` plugin in Flask
+   to allow for such request in case the backend is
+   accessed via a different domain.
+   See: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+ - wrote a utility to reuse the schema of the backendApi in `backendSchema`
+ - defined a reactive variable to store the result and initialized it
+ - wrote the `getPing` function to call the backend API  and
+ - connected `getPing` to the `onMounted` hook
+ - rendered the result in the target location in the template
+ - extended the test of `CoreComponent` to use the axios library and it's mock-adapter
+ - flush promises and await it before inspecting ;)
