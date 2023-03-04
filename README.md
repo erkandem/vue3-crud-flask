@@ -117,3 +117,20 @@ Test modules:
  - FooterComponent.spec.js :check that the rendered component has one `footer` component
  - CoreComponent.spec.js: check that the rendered component has one `main` component
  - App.spec.js: check that the subcomponents are mounted into the wrapper component
+
+
+### Adding CSS
+
+One way to add external CSS is to have the `.css` files in the `assets/css/`.
+A `main.css` is created and both are imported into it
+
+```css
+@import './normalize.css';
+@import './sakura.css';
+```
+
+Finally, the `main.css` is imported into `main.js`
+
+```js 
+import './assets/css/main.css'
+```
