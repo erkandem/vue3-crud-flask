@@ -178,3 +178,65 @@ npm install @vitest/coverage-c8 --save-dev
        //...
     }
 ```
+### IntelliJ integration
+https://vitest.dev/guide/debugging.html#intellij-idea
+
+> Create a 'Node.js' run configuration. Use the following settings to run all tests in debug mode:
+
+
+| Setting                | Value                            |
+|------------------------|----------------------------------|
+| Working directory      | /path/to/your-project-root       |
+| JavaScript file	       | ./node_modules/vitest/vitest.mjs |
+| Application parameters | run --threads false              |
+
+### Refactor to match Tutorial
+
+Did a TDD approach. Feels good. But how do you test that the features and code you moved
+don't exist anymore on certain page? Hard to check for non-existence.
+
+ - create a dummy HomeView and Home component
+ - create PingView and Ping component
+ - install the vue-router
+ - configure PingView and HomeView to be plugged in the CoreComponents main element
+ - refactor the backend call and onmount of ping from CoreComponent to the Ping component
+ - Add navigation links to the HomeView and PingView into the HeaderComponent
+
+Added a missing test for the case when the call on the ping endpoint fails.
+ - throw a network error with the axios adapter
+ - in case we don't get a 2xx
+ - 
+Structure of the app:
+```
+App [
+   HeaderComponent
+   CoreComponent [
+      <main>
+         <RouterView>
+      </main>
+   ]
+   FooterComponent
+]
+
+RouterViews [
+   HomeView [ HomeComponent ]
+   PingView [ PingComponent ]
+]
+```
+**Extra:**
+
+ - check that specific subcomponents are present:
+```js
+mount(App).getComponent({name: 'SubComponentName'})
+```
+
+ - throwing a network error with the axios mock adapter
+```js
+axiosMock.onGet(url).networkError()
+```
+
+ - `createRouter`, `RouterLink` and `RouterView` components/factories
+   API Doc for vue-router: https://router.vuejs.org/api/
+
+ - `toBe` for primitives in `expect` of `vitest
+   https://vitest.dev/api/expect.html#tobe
