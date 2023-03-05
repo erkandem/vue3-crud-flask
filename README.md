@@ -27,16 +27,17 @@ follow ons:
 
 **Tech Setup**
 
-| Tech       | Tutorial | My Setup     |
-|------------|----------|--------------|
-| Vue        | 2.6.11   | 3.2.47       |
-| Vue CLI    | 4.5.11   | -            |
-| Vite       | -        | 4.1.4        |
-| plugin-vue | -        | 1.9.0        |
-| Node       | 15.7.0   | 18.14.2      |
-| npm        | 7.4.3    | 9.5.0        |
-| Flask      | 1.1.2    | 2.2.3        |
-| Python     | 3.9.2    | 3.11.2       |
+| Tech       | Tutorial | My Setup |
+|------------|----------|----------|
+| Vue        | 2.6.11   | 3.2.47   |
+| Vue CLI    | 4.5.11   | -        |
+| Vite       | -        | 4.1.4    |
+| plugin-vue | -        | 1.9.0    |
+| Node       | 15.7.0   | 18.14.2  |
+| npm        | 7.4.3    | 9.5.0    |
+| Flask      | 1.1.2    | 2.2.3    |
+| Python     | 3.9.2    | 3.11.2   |
+| Bootstrap  | 4.6.0    | 4.6.2    |
 
 
 Sections:
@@ -240,3 +241,30 @@ axiosMock.onGet(url).networkError()
 
  - `toBe` for primitives in `expect` of `vitest
    https://vitest.dev/api/expect.html#tobe
+
+## 5 Bootstrap
+
+[THAT one](http://getskeleton.com/) with much more features. 
+
+### The Bootstrap Grid System
+
+ - The B Grid system needs one top level `container` class (ideally one).
+ - Each `row` class in a container will offer a split into columns.
+ - The maximum number of columns is 12.
+ - `col-sm-10` class e.g. offers 10/12 of the `col-sm`.
+ - ❓ `sm` is a keyword for the breakpoint? so it's controlled manually instead of automatically?
+ - ❓ wrap the header main and footer into row and col or 
+   have row and col inside of them ?
+https://getbootstrap.com/docs/4.0/layout/grid/
+
+
+**Extras:**
+
+ - The scope keyword can be omitted in the components style.
+   It can also be combined with both a scope and unscoped component
+   https://vue-loader.vuejs.org/guide/scoped-css.html#scoped-css
+
+Love it:
+
+> Now we can start building out the functionality of our CRUD app.
+

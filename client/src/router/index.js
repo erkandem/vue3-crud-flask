@@ -12,6 +12,11 @@ const routes = [
     path: '/ping',
     name: 'ping',
     component: () => import('@/views/PingView.vue')
+  },
+  {
+    path: '/books',
+    name: 'books',
+    component: () => import('@/views/BooksView.vue')
   }
 ]
 

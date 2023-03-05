@@ -5,7 +5,15 @@ import FooterComponent from '@/components/FooterComponent.vue'
 </script>
 
 <template>
-  <HeaderComponent />
-  <CoreComponent />
-  <FooterComponent />
+  <div class="container">
+    <HeaderComponent />
+    <CoreComponent />
+    <FooterComponent />
+  </div>
 </template>
+
+<style>
+#app {
+  margin-top: 60px;
+}
+</style>

@@ -37,4 +37,13 @@ describe('App.vue', () => {
     })
     expect(wrapper.getComponent({ name: 'PingComponent' }).exists()).toBeTruthy()
   })
+  it('renders the books view', async () => {
+    await router.push('/books')
+    const wrapper = mount(App, {
+      global: {
+        plugins: [router]
+      }
+    })
+    expect(wrapper.getComponent({ name: 'BooksComponent' }).exists()).toBeTruthy()
+  })
 })
