@@ -41,19 +41,19 @@ follow ons:
 
 
 Sections:
- - Objectives
- - Flask and Vue
- - Flask Setup
- - Vue Setup
- - Bootstrap Setup
- - What are we Building?
- - GET Route
- - Bootstrap Vue
- - POST Route
- - Alert Component
- - PUT Route
- - DELETE Route
- - Conclusion
+ - 1 Objectives
+ - 2 Flask and Vue
+ - 3 Flask Setup
+ - 4 Vue Setup
+ - 5 Bootstrap Setup
+ - 6 What are we Building?
+ - 7 GET Route
+ - 8 Bootstrap Vue
+ - 9 POST Route
+ - 10 Alert Component
+ - 11 PUT Route
+ - 12 DELETE Route
+ - 13 Conclusion
 
 ## 2 Flask and Vue
 
@@ -268,3 +268,16 @@ Love it:
 
 > Now we can start building out the functionality of our CRUD app.
 
+## 6 What are we Building?
+
+Stated Mission Goal from testdriven.io
+ - JSON restful backend via Python Flask
+ - about 1 endpoint ("books")
+ - Vue Front End to interact with that endpoint
+And I will sprinkle in:
+ - Tests for Flask
+ - Tests for Vue
+
+## 7 GET Route
+
+### Server Side
