@@ -27,17 +27,17 @@ follow ons:
 
 **Tech Setup**
 
-| Tech       | Tutorial | My Setup |
-|------------|----------|----------|
-| Vue        | 2.6.11   | 3.2.47   |
-| Vue CLI    | 4.5.11   | -        |
-| Vite       | -        | 4.1.4    |
-| plugin-vue | -        | 1.9.0    |
-| Node       | 15.7.0   | 18.14.2  |
-| npm        | 7.4.3    | 9.5.0    |
-| Flask      | 1.1.2    | 2.2.3    |
-| Python     | 3.9.2    | 3.11.2   |
-| Bootstrap  | 4.6.0    | 4.6.2    |
+| Tech          | Tutorial | My Setup |
+|---------------|----------|----------|
+| Vue           | 2.6.11   | 3.2.47   |
+| Vue CLI       | 4.5.11   | -        |
+| Vite          | -        | 4.1.4    |
+| plugin-vue    | -        | 1.9.0    |
+| Node          | 15.7.0   | 18.14.2  |
+| npm           | 7.4.3    | 9.5.0    |
+| Flask         | 1.1.2    | 2.2.3    |
+| Python        | 3.9.2    | 3.11.2   |
+| Bootstrap     | 4.6.0    | 4.6.2    |
 
 
 Sections:
@@ -299,3 +299,23 @@ We want to expose a list of book objects. Each objects shall have the field:
    - error
    - network error
  - in addition to the tutorial added a `span` containing summarizing the result of the API call 
+
+## 8 POST Route
+
+### server side
+ - validation function for books using a schema dictionary
+ - checks if record is duplicate
+
+
+### client side
+ - created a modal to render the form to add a book. however,...
+ - ... bootsrap-vue modules do not work as expected, however having bootsrap css loaded anyway
+   the modal can be styled manually with the tags needed
+   - https://getbootstrap.com/docs/4.0/components/forms/
+   - https://getbootstrap.com/docs/4.0/components/buttons/
+   - https://testdriven.io/courses/learn-vue/updating-data-via-http-put/#H-9-editusermodal-component
+ - bootstrap-vue-next does not work good enough either (Vue 3 Bootstrap 5)
+ - I mocked axios many more times to avoid unintended http calls which I only noticed after I killed
+   the backend which was coincidentally running during the tests
+ - removed many `console.log` calls
+ - 

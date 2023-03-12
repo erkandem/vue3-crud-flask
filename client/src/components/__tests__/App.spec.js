@@ -1,7 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import App from '@/App.vue'
 import router from '@/router'
+import axios from 'axios'
+import MockAdapter from 'axios-mock-adapter'
+import { backendSchema } from '@/utils/backendUtils'
+
+let axiosMock = new MockAdapter(axios)
+
+afterEach(() => {
+  axiosMock.reset()
+})
 
 describe('App.vue', () => {
   it('mounts all three main components', async () => {
@@ -38,6 +47,7 @@ describe('App.vue', () => {
     expect(wrapper.getComponent({ name: 'PingComponent' }).exists()).toBeTruthy()
   })
   it('renders the books view', async () => {
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, { status: 'success', books: [] })
     await router.push('/books')
     const wrapper = mount(App, {
       global: {

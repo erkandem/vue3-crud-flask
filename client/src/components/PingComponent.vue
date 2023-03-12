@@ -10,11 +10,9 @@ const getPing = () => {
     .get(backendSchema.getPingRouteURL())
     .then((response) => {
       pingResponseData.value = response.data['message']
-      console.log(response.data['message'])
-      console.log('called ping endpoint successfully')
     })
     .catch((error) => {
-      console.log('error calling backend' + String(error))
+      console.log('error calling backend ' + String(error))
       if (error.message === 'Network Error') {
         pingResponseData.value = 'Is the backend running at ' + String(error.config.url) + '?'
       } else {

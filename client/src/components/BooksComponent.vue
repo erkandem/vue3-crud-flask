@@ -3,9 +3,11 @@ import axios from 'axios'
 import { backendSchema } from '@/utils/backendUtils'
 import { constants } from '@/utils/constants'
 import { ref, onMounted } from 'vue'
+import AddBookModal from '@/components/AddBookModal.vue'
 
 const books = ref([])
 const apiStatusMessage = ref('')
+const showAddBookModal = ref(false)
 
 const getBooks = () => {
   axios
@@ -14,16 +16,40 @@ const getBooks = () => {
       if (response.data.status === 'success') {
         books.value = response.data.books
       }
-      console.log('Call to books backend was successful.')
     })
     .catch((error) => {
       if (error.message === 'Network Error') {
-        apiStatusMessage.value = constants.networkFailedAPIMessage
+        apiStatusMessage.value = constants.networkFailedGetAPIMessage
       } else {
-        apiStatusMessage.value = constants.failedAPIMessage
+        apiStatusMessage.value = constants.failedGetAPIMessage
       }
-      console.log('Call to books backend failed. ' + String(error.message))
+      console.log(String(error))
     })
+}
+const addBook = (payload) => {
+  axios
+    .post(backendSchema.getBooksRouteURL(), payload)
+    .then(() => {
+      apiStatusMessage.value = constants.successfulPostApiMessage
+    })
+    .catch((error) => {
+      if (error.message === 'Network Error') {
+        apiStatusMessage.value = constants.networkFailedPostApiMessage
+      } else {
+        apiStatusMessage.value = constants.failedPostApiMessage
+      }
+      console.log(String(error))
+    })
+    .finally(() => {
+      getBooks()
+    })
+}
+const cancelAddBook = () => {
+  showAddBookModal.value = false
+}
+const submitAddBook = (data) => {
+  showAddBookModal.value = false
+  addBook(data)
 }
 
 onMounted(getBooks)
@@ -36,7 +62,14 @@ onMounted(getBooks)
       <hr />
       <br />
       <br />
-      <button type="button" class="btn btn-success btn-sm">Add Book</button>
+      <button
+        id="add-book-button"
+        type="button"
+        class="btn btn-success btn-sm"
+        v-on:click="showAddBookModal = true"
+      >
+        Add Book
+      </button>
       <br />
       <span id="books-api-response-status"> {{ apiStatusMessage }}</span>
       <br />
@@ -65,5 +98,10 @@ onMounted(getBooks)
         </tbody>
       </table>
     </div>
+    <AddBookModal
+      v-if="showAddBookModal"
+      v-on:submitAddBook="submitAddBook"
+      v-on:cancelAddBook="cancelAddBook"
+    ></AddBookModal>
   </div>
 </template>
