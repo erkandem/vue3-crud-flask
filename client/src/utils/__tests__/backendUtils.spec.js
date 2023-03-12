@@ -8,8 +8,8 @@ describe('backendUtils.js', () => {
     expect(backendSchema.getPingRouteURL()).toMatch(expectation)
   })
   it('books endpoint is composed correctly', () => {
-    const expectation = backendSchema.baseUrl + backendSchema.booksEndoint
+    const expectation = backendSchema.baseUrl + backendSchema.booksEndpoint
     expectTypeOf(expectation).toBeString()
-    expect(backendSchema.getPingRouteURL()).toMatch(expectation)
+    expect(backendSchema.getBooksRouteURL()).toMatch(expectation)
   })
 })

@@ -1,5 +1,32 @@
 <script setup>
 import axios from 'axios'
+import { backendSchema } from '@/utils/backendUtils'
+import { constants } from '@/utils/constants'
+import { ref, onMounted } from 'vue'
+
+const books = ref([])
+const apiStatusMessage = ref('')
+
+const getBooks = () => {
+  axios
+    .get(backendSchema.getBooksRouteURL())
+    .then((response) => {
+      if (response.data.status === 'success') {
+        books.value = response.data.books
+      }
+      console.log('Call to books backend was successful.')
+    })
+    .catch((error) => {
+      if (error.message === 'Network Error') {
+        apiStatusMessage.value = constants.networkFailedAPIMessage
+      } else {
+        apiStatusMessage.value = constants.failedAPIMessage
+      }
+      console.log('Call to books backend failed. ' + String(error.message))
+    })
+}
+
+onMounted(getBooks)
 </script>
 
 <template>
@@ -7,9 +34,12 @@ import axios from 'axios'
     <div class="col-sm-10">
       <h1>Books</h1>
       <hr />
-      <br /><br />
+      <br />
+      <br />
       <button type="button" class="btn btn-success btn-sm">Add Book</button>
-      <br /><br />
+      <br />
+      <span id="books-api-response-status"> {{ apiStatusMessage }}</span>
+      <br />
       <table class="table table-hover">
         <thead>
           <tr>
@@ -20,10 +50,11 @@ import axios from 'axios'
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>foo</td>
-            <td>bar</td>
-            <td>foobar</td>
+          <tr v-for="(book, index) in books" v-bind:key="index">
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td v-if="book.read">{{ constants.yesString }}</td>
+            <td v-else>{{ constants.noString }}</td>
             <td>
               <div class="btn-group" role="group">
                 <button type="button" class="btn btn-warning btn-sm">Update</button>

@@ -280,4 +280,22 @@ And I will sprinkle in:
 
 ## 7 GET Route
 
+We want to expose a list of book objects. Each objects shall have the field:
+ - `title` containing the title of the book
+ - `author` containing the author of the book
+ - `read` a boolean indicating whether the book was already read (or not)
+
 ### Server Side
+ - moved testing client and other fixtures into `conftest.py`, so pytest picks them up
+ - created per route test modules
+ - created tests for books route wrote the resolver and defined the route
+ - wrapped the list of books into a getter
+
+### Client Side
+ - added constants module for e.g. strings
+ - added books route to `backendSchema` object
+ - added tests covering the behavior of the booksComponent on
+   - success
+   - error
+   - network error
+ - in addition to the tutorial added a `span` containing summarizing the result of the API call 
