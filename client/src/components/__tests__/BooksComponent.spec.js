@@ -50,6 +50,7 @@ describe('BooksComponent.vue', () => {
 
     // check that the status container is empty
     expect(wrapper.find('#books-api-response-status').text()).toMatch('')
+    // expect alert div classes to be empty
 
     // inspect rendering of the API result
     expect(wrapper.findAll('tr').length).toBe(1 + books.books.length)
@@ -85,6 +86,7 @@ describe('BooksComponent.vue', () => {
 
     // check that the status container is pointing out an error
     expect(wrapper.find('#books-api-response-status').text()).toMatch(constants.failedGetAPIMessage)
+    // expect alert div class is set to                  alert alert-danger
 
     // inspect the rendering of the API result
     expect(wrapper.findAll('tr').length).toBe(1) // only table header
@@ -113,6 +115,7 @@ describe('BooksComponent.vue', () => {
     expect(wrapper.find('#books-api-response-status').text()).toMatch(
       constants.networkFailedGetAPIMessage
     )
+    // expect alert class is set to            alert alert-danger
 
     // inspect the rendering of the API result
     expect(wrapper.findAll('tr').length).toBe(1) // only table header
@@ -155,6 +158,7 @@ describe('BooksComponent.vue on POST', () => {
     expect(wrapper.find('#books-api-response-status').text()).toMatch(
       constants.successfulPostApiMessage
     )
+    // expect alert div to have classes    alert alert-primary
   })
   it('submit user data FAILS due to network', async () => {
     axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, {
@@ -186,6 +190,7 @@ describe('BooksComponent.vue on POST', () => {
     expect(wrapper.find('#books-api-response-status').text()).toMatch(
       constants.networkFailedPostApiMessage
     )
+    // expect alert class is set to            alert alert-danger
   })
   it('submit user data FAILS due to  4.. or 5.. ', async () => {
     axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, {
@@ -217,6 +222,7 @@ describe('BooksComponent.vue on POST', () => {
     expect(wrapper.find('#books-api-response-status').text()).toMatch(
       constants.failedPostApiMessage
     )
+    // expect alert class is set to            alert alert-danger
   })
 })
 

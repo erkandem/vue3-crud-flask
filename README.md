@@ -318,4 +318,11 @@ We want to expose a list of book objects. Each objects shall have the field:
  - I mocked axios many more times to avoid unintended http calls which I only noticed after I killed
    the backend which was coincidentally running during the tests
  - removed many `console.log` calls
- - 
+
+## 10 Alert Component
+
+ - only clientside code
+ - bootsrap alert component: https://getbootstrap.com/docs/4.0/components/alerts/
+ - couple of styles to pick from
+ - alternative in bulma: https://bulma.io/documentation/elements/notification/
+ - nice ranking: https://2021.stateofcss.com/en-US/technologies/css-frameworks
