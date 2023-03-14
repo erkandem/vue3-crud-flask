@@ -1,12 +1,15 @@
 <script setup>
 import axios from 'axios'
 import { backendSchema } from '@/utils/backendUtils'
-import { constants } from '@/utils/constants'
+import { constants, apiStatuses } from '@/utils/constants'
 import { ref, onMounted } from 'vue'
 import AddBookModal from '@/components/AddBookModal.vue'
+import AlertComponent from '@/components/AlertComponent.vue'
 
 const books = ref([])
 const apiStatusMessage = ref('')
+const apiStatus = ref(apiStatuses.neutral)
+
 const showAddBookModal = ref(false)
 
 const getBooks = () => {
@@ -16,6 +19,8 @@ const getBooks = () => {
       if (response.data.status === 'success') {
         books.value = response.data.books
       }
+      // that is correct we do not set a success message here
+      // results of Post, Put and Delete have priority
     })
     .catch((error) => {
       if (error.message === 'Network Error') {
@@ -23,6 +28,7 @@ const getBooks = () => {
       } else {
         apiStatusMessage.value = constants.failedGetAPIMessage
       }
+      apiStatus.value = apiStatuses.error
       console.log(String(error))
     })
 }
@@ -31,6 +37,7 @@ const addBook = (payload) => {
     .post(backendSchema.getBooksRouteURL(), payload)
     .then(() => {
       apiStatusMessage.value = constants.successfulPostApiMessage
+      apiStatus.value = apiStatuses.success
     })
     .catch((error) => {
       if (error.message === 'Network Error') {
@@ -38,6 +45,7 @@ const addBook = (payload) => {
       } else {
         apiStatusMessage.value = constants.failedPostApiMessage
       }
+      apiStatus.value = apiStatuses.error
       console.log(String(error))
     })
     .finally(() => {
@@ -52,6 +60,10 @@ const submitAddBook = (data) => {
   addBook(data)
 }
 
+const dismissAlert = () => {
+  apiStatusMessage.value = ''
+  apiStatus.value = apiStatuses.neutral
+}
 onMounted(getBooks)
 </script>
 
@@ -71,7 +83,12 @@ onMounted(getBooks)
         Add Book
       </button>
       <br />
-      <span id="books-api-response-status"> {{ apiStatusMessage }}</span>
+      <br />
+      <AlertComponent
+        v-bind:alertMessage="apiStatusMessage"
+        v-bind:alertStatus="apiStatus"
+        v-on:dismissAlert="dismissAlert"
+      />
       <br />
       <table class="table table-hover">
         <thead>

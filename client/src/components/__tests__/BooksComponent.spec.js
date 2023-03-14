@@ -3,7 +3,7 @@ import { shallowMount, flushPromises } from '@vue/test-utils'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { backendSchema } from '@/utils/backendUtils'
-import { constants } from '@/utils/constants'
+import { constants, apiStatuses } from '@/utils/constants'
 import BooksComponent from '@/components/BooksComponent.vue'
 
 const rowsInTable = 4
@@ -48,9 +48,9 @@ describe('BooksComponent.vue', () => {
     // check that the component variable stores the API result
     expect(wrapper.vm.books).toEqual(books.books)
 
-    // check that the status container is empty
-    expect(wrapper.find('#books-api-response-status').text()).toMatch('')
-    // expect alert div classes to be empty
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch('')
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.neutral)
 
     // inspect rendering of the API result
     expect(wrapper.findAll('tr').length).toBe(1 + books.books.length)
@@ -84,9 +84,9 @@ describe('BooksComponent.vue', () => {
     // check that the component variable stores the API result
     expect(wrapper.vm.books).toEqual([])
 
-    // check that the status container is pointing out an error
-    expect(wrapper.find('#books-api-response-status').text()).toMatch(constants.failedGetAPIMessage)
-    // expect alert div class is set to                  alert alert-danger
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.failedGetAPIMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.error)
 
     // inspect the rendering of the API result
     expect(wrapper.findAll('tr').length).toBe(1) // only table header
@@ -111,11 +111,9 @@ describe('BooksComponent.vue', () => {
     // check that the component variable stores the API result
     expect(wrapper.vm.books).toEqual([])
 
-    // check that the status container is pointing out an error
-    expect(wrapper.find('#books-api-response-status').text()).toMatch(
-      constants.networkFailedGetAPIMessage
-    )
-    // expect alert class is set to            alert alert-danger
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.networkFailedGetAPIMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.error)
 
     // inspect the rendering of the API result
     expect(wrapper.findAll('tr').length).toBe(1) // only table header
@@ -154,11 +152,10 @@ describe('BooksComponent.vue on POST', () => {
 
     // inspect to the initial and consecutive get request
     expect(axiosMock.history.get.length).toBe(2)
-    // check side effect on the span
-    expect(wrapper.find('#books-api-response-status').text()).toMatch(
-      constants.successfulPostApiMessage
-    )
-    // expect alert div to have classes    alert alert-primary
+
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.successfulPostApiMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.success)
   })
   it('submit user data FAILS due to network', async () => {
     axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, {
@@ -186,10 +183,10 @@ describe('BooksComponent.vue on POST', () => {
     // inspect to the initial and consecutive get request
     expect(axiosMock.history.get.length).toBe(2)
 
-    // check side effect on the span
-    expect(wrapper.find('#books-api-response-status').text()).toMatch(
-      constants.networkFailedPostApiMessage
-    )
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.networkFailedPostApiMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.error)
+
     // expect alert class is set to            alert alert-danger
   })
   it('submit user data FAILS due to  4.. or 5.. ', async () => {
@@ -218,11 +215,9 @@ describe('BooksComponent.vue on POST', () => {
     // inspect to the initial and consecutive get request
     expect(axiosMock.history.get.length).toBe(2)
 
-    // check side effect on the span
-    expect(wrapper.find('#books-api-response-status').text()).toMatch(
-      constants.failedPostApiMessage
-    )
-    // expect alert class is set to            alert alert-danger
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.failedPostApiMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.error)
   })
 })
 
@@ -262,6 +257,7 @@ describe('BooksComponent.vue modal sub component', () => {
     await flushPromises()
 
     expect(wrapper.getComponent({ name: 'AddBookModal' }).exists()).toBe(true)
+    expect(wrapper.getComponent({ name: 'AlertComponent' }).exists()).toBe(true)
   })
   it('hitting the "add book button" makes the modal visible', async () => {
     const wrapper = shallowMount(BooksComponent)
@@ -271,5 +267,22 @@ describe('BooksComponent.vue modal sub component', () => {
 
     expect(wrapper.vm.showAddBookModal).toBeTruthy()
     expect(wrapper.getComponent({ name: 'AddBookModal' }).isVisible()).toBe(true)
+  })
+})
+
+describe('BooksComponent.vue alert sub component', () => {
+  beforeEach(() => {
+    // generally mocking out the axios package bc we don't inspect the IO here
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, bookGetResponseMock())
+  })
+  it('emitted dismissal call resets status and message', async () => {
+    const wrapper = shallowMount(BooksComponent)
+    wrapper.vm.apiStatusMessage = 'message'
+    wrapper.vm.apiStatus = 'status'
+
+    wrapper.vm.dismissAlert()
+
+    expect(wrapper.vm.apiStatusMessage).toBe('')
+    expect(wrapper.vm.apiStatus).toBe('')
   })
 })
