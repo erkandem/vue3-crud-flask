@@ -302,6 +302,8 @@ We want to expose a list of book objects. Each objects shall have the field:
 
 ## 8 POST Route
 
+https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.3
+
 ### server side
  - validation function for books using a schema dictionary
  - checks if record is duplicate
@@ -325,5 +327,15 @@ We want to expose a list of book objects. Each objects shall have the field:
  - bootsrap alert component: https://getbootstrap.com/docs/4.0/components/alerts/
  - alternative in bulma: https://bulma.io/documentation/elements/notification/
  - nice ranking if CSS frameworks: https://2021.stateofcss.com/en-US/technologies/css-frameworks
- - covered it with tests and implemented dismisability
+ - covered it with tests and implemented dismissability
  - could make sense to have and array of alerts
+
+## 11 PUT Route
+
+https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.4
+https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
+
+### Server Side
+
+ - wrote tests for the PUT route
+ - left a note regarding schema validation
