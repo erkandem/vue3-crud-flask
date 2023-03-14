@@ -339,3 +339,5 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
 
  - wrote tests for the PUT route
  - left a note regarding schema validation
+ - app code diverges from tutorial, since I'm not deleting the object but really updating it
+ - wrote a bit more validation by adding the `required` flag to the schema

@@ -6,7 +6,7 @@ that's not the focus of the tutorial
 """
 
 from http import HTTPStatus
-
+from uuid import uuid4
 import pytest
 
 import app
@@ -153,13 +153,12 @@ def test_post_books_fails_duplicate_book(client, monkeypatch):
 
 def test_put_route_is_successful(client, monkeypatch):
     books = [{
-        "id": 1,
+        "id": str(uuid4()),
         "title": "some title",
         "author": "Robert McBurger",
         "read": False
     }]
     modified_book = {
-        "id": 1,
         "title": "some other title",
         "author": "Robert McBurger",
         "read": False
@@ -168,13 +167,16 @@ def test_put_route_is_successful(client, monkeypatch):
     monkeypatch.setattr(app, "BOOKS", books)
 
     response = client.put(f"/books/{books[0]['id']}", json=modified_book)
+
     assert response.status_code == HTTPStatus.OK
     assert response.json == {
         "status": "success",
-        "message": "updated",
+        "message": "Updated book.",
     }
     assert len(books) == 1
-    assert books[0] == modified_book
+    expectation = {"id": books[0]["id"]}
+    expectation.update(modified_book)
+    assert books[0] == expectation
 
 
 def test_put_route_is_successful_with_id_part_of_the_payload(
@@ -182,12 +184,13 @@ def test_put_route_is_successful_with_id_part_of_the_payload(
         monkeypatch,
 ):
     books = [{
-        "id": 1,
+        "id": str(uuid4()),
         "title": "some title",
         "author": "Robert McBurger",
         "read": False
     }]
     modified_book = {
+        "id": books[0]["id"],
         "title": "some other title",
         "author": "Robert McBurger",
         "read": False
@@ -196,10 +199,11 @@ def test_put_route_is_successful_with_id_part_of_the_payload(
     monkeypatch.setattr(app, "BOOKS", books)
 
     response = client.put(f"/books/{books[0]['id']}", json=modified_book)
+
     assert response.status_code == HTTPStatus.OK
     assert response.json == {
         "status": "success",
-        "message": "updated",
+        "message": "Updated book.",
     }
     assert len(books) == 1
     assert books[0] == modified_book
@@ -210,7 +214,7 @@ def test_put_route_fails_because_res_does_not_exist(
         monkeypatch,
 ):
     books = [{
-        "id": 1,
+        "id": str(uuid4()),
         "title": "some title",
         "author": "Robert McBurger",
         "read": False
@@ -220,16 +224,17 @@ def test_put_route_fails_because_res_does_not_exist(
         "author": "Robert McBurger",
         "read": False
     }
-    id_to_modifiy = 2
+    id_to_modify = str(uuid4())
     assert len(books) == 1
-    assert books[0]["id"] != id_to_modifiy
+    assert books[0]["id"] != id_to_modify
     monkeypatch.setattr(app, "BOOKS", books)
 
-    response = client.put(f"/books/{id_to_modifiy}", json=modified_book)
+    response = client.put(f"/books/{id_to_modify}", json=modified_book)
+
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json == {
         "status": "error",
-        "message": "Can't create here. You can not assign an idea on a new object. Use the POST route.",
+        "message": "Book not in DB.",
     }
     assert len(books) == 1
     assert books[0] != modified_book
@@ -240,7 +245,7 @@ def test_put_route_fails_because_body_is_partial(
         monkeypatch,
 ):
     books = [{
-        "id": 1,
+        "id": str(uuid4),
         "title": "some title",
         "author": "Robert McBurger",
         "read": False
@@ -254,10 +259,11 @@ def test_put_route_fails_because_body_is_partial(
     monkeypatch.setattr(app, "BOOKS", books)
 
     response = client.put(f"/books/{books[0]['id']}", json=modified_book)
+
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json == {
         "status": "error",
-        "message": "Partial update not supported.",
+        "message": "Validation failed.",
     }
     assert len(books) == 1
     assert books[0] != modified_book
