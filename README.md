@@ -341,3 +341,29 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
  - left a note regarding schema validation
  - app code diverges from tutorial, since I'm not deleting the object but really updating it
  - wrote a bit more validation by adding the `required` flag to the schema
+
+### Client Side
+
+#### Outline
+
+- Add modal and form
+- Handle update button click
+- Wire up AJAX request
+- Alert user
+- Handle cancel button click
+
+#### Refactoring Task
+
+ - the form at the core of the modal for the edit and the add component can
+   be pulled out 
+
+
+#### Extras
+**Copying JS vars/objects:**
+
+ - primitives are copied on assignment 
+ - objects are only copying the reference on assignment to a new var:
+   - for shallow copies `Object.assign({}, objectToBeCopied)`
+   - for nested objects `structuredClone(objectToBeCopied)`
+   - related: "subclass" creation `Object.create(objectToBeCopied)`
+     the properties and object mehtods will be available in `__proto__`

@@ -53,7 +53,7 @@ const initForm = () => {
           />
         </div>
 
-        <div class="form-check">
+        <div class="form-check" id="form-read-group">
           <input
             id="form-read-input"
             type="checkbox"

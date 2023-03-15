@@ -221,6 +221,125 @@ describe('BooksComponent.vue on POST', () => {
   })
 })
 
+describe('BooksComponent.vue handles editing a book', () => {
+  it('clicking the edit button loads the modal', async () => {
+    const sampleBook = {
+      id: '1',
+      title: 'title',
+      author: 'author',
+      read: true
+    }
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, {
+      status: 'success',
+      books: [sampleBook]
+    })
+    const wrapper = shallowMount(BooksComponent)
+    const buttons = wrapper.findAll('tbody button')
+    expect(buttons[0].text()).toMatch('Update')
+    expect(wrapper.vm.showEditBookModal).toBe(false)
+
+    await buttons[0].trigger('click')
+
+    expect(wrapper.vm.editBookForm).toEqual(sampleBook)
+    expect(wrapper.vm.showEditBookModal).toBe(true)
+  })
+  it('handles a successful PUT request', async () => {
+    const sampleBook = {
+      id: '1',
+      title: 'title',
+      author: 'author',
+      read: true
+    }
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, {
+      status: 'success',
+      books: []
+    })
+    axiosMock.onPut(backendSchema.getEditBookRoute(sampleBook.id)).reply(200)
+    const wrapper = shallowMount(BooksComponent)
+    expect(axiosMock.history.get.length).toBe(1)
+
+    wrapper.vm.editBook(sampleBook)
+    await flushPromises()
+
+    // inspect the sent PUT request
+    expect(axiosMock.history.put.length).toBe(1)
+    expect(axiosMock.history.put[0].method).toMatch('put')
+    expect(axiosMock.history.put[0].url).toMatch(backendSchema.getEditBookRoute(sampleBook.id))
+    expect(JSON.parse(axiosMock.history.put[0].data)).toEqual(sampleBook)
+
+    // inspect to the initial GET and consecutive post-PUT GET request
+    expect(axiosMock.history.get.length).toBe(2)
+
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.successfulEditMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.success)
+  })
+
+  it('handles a failed PUT request due to network issues', async () => {
+    const sampleBook = {
+      id: '1',
+      title: 'title',
+      author: 'author',
+      read: true
+    }
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, {
+      status: 'success',
+      books: []
+    })
+    axiosMock.onPut(backendSchema.getEditBookRoute(sampleBook.id)).networkError()
+
+    const wrapper = shallowMount(BooksComponent)
+    expect(axiosMock.history.get.length).toBe(1)
+
+    wrapper.vm.editBook(sampleBook)
+    await flushPromises()
+
+    // inspect the sent PUT request
+    expect(axiosMock.history.put.length).toBe(1)
+    expect(axiosMock.history.put[0].method).toMatch('put')
+    expect(axiosMock.history.put[0].url).toMatch(backendSchema.getEditBookRoute(sampleBook.id))
+    expect(JSON.parse(axiosMock.history.put[0].data)).toEqual(sampleBook)
+
+    // inspect to the initial GET and consecutive post-PUT GET request
+    expect(axiosMock.history.get.length).toBe(2)
+
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.networkFailedEditMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.error)
+  })
+  it('handles a failed PUT request due to  4.. or 5.. ', async () => {
+    const sampleBook = {
+      id: '1',
+      title: 'title',
+      author: 'author',
+      read: true
+    }
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, {
+      status: 'success',
+      books: []
+    })
+    axiosMock.onPut(backendSchema.getEditBookRoute(sampleBook.id)).reply(404)
+
+    const wrapper = shallowMount(BooksComponent)
+    expect(axiosMock.history.get.length).toBe(1)
+
+    wrapper.vm.editBook(sampleBook)
+    await flushPromises()
+
+    // inspect the sent PUT request
+    expect(axiosMock.history.put.length).toBe(1)
+    expect(axiosMock.history.put[0].method).toMatch('put')
+    expect(axiosMock.history.put[0].url).toMatch(backendSchema.getEditBookRoute(sampleBook.id))
+    expect(JSON.parse(axiosMock.history.put[0].data)).toEqual(sampleBook)
+
+    // inspect to the initial GET and consecutive post-PUT GET request
+    expect(axiosMock.history.get.length).toBe(2)
+
+    // assert that apiStatusMessage and apiStatus props for the alert subcomponent are set
+    expect(wrapper.vm.apiStatusMessage).toMatch(constants.failedEditMessage)
+    expect(wrapper.vm.apiStatus).toMatch(apiStatuses.error)
+  })
+})
 describe('BooksComponent.vue emit handlers', () => {
   it('handle a cancel event', () => {
     const wrapper = shallowMount(BooksComponent)
@@ -244,9 +363,40 @@ describe('BooksComponent.vue emit handlers', () => {
     // check that the payload reached the IO method and resulted in a POST request
     expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(probe)
   })
+  it('handle a cancelEditBook event', () => {
+    const wrapper = shallowMount(BooksComponent)
+    wrapper.vm.showAddBookModal = true
+    const initialFormState = { id: '1', author: 'a', title: 'b', read: true }
+    const expectedFormState = { id: '', author: '', title: '', read: false }
+    wrapper.vm.addBookForm = initialFormState
+
+    wrapper.vm.cancelEditBook()
+
+    // check that the visibility is false
+    expect(wrapper.vm.showEditBookModal).toBe(false)
+    // check that the form dat was reset
+    expect(wrapper.vm.addBookForm).toEqual(expectedFormState)
+  })
+  it('handles a submitEditBook custom event', async () => {
+    axiosMock.onGet(backendSchema.getBooyksRouteURL()).reply(200, bookGetResponseMock())
+    axiosMock.onPut(backendSchema.getBooksRouteURL()).reply(200)
+    const wrapper = shallowMount(BooksComponent)
+    wrapper.vm.showEditBookModal = true
+    const probe = { test: true }
+    const expectedFormState = { id: '', author: '', title: '', read: false }
+    wrapper.vm.submitEditBook(probe)
+    await flushPromises
+
+    // check the side effect on the alert components props
+    expect(wrapper.vm.showEditBookModal).toBe(false)
+    // check that the edit form data is cleared
+    expect(wrapper.vm.editBookForm).toEqual(expectedFormState)
+    // check that the payload reached the IO method and resulted in a PUT request
+    expect(JSON.parse(axiosMock.history.put[0].data)).toEqual(probe)
+  })
 })
 
-describe('BooksComponent.vue modal sub component', () => {
+describe('BooksComponent.vue modal sub components', () => {
   beforeEach(() => {
     // generally mocking out the axios package bc we don't inspect the IO here
     axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, bookGetResponseMock())
@@ -256,6 +406,7 @@ describe('BooksComponent.vue modal sub component', () => {
     wrapper.vm.showAddBookModal = true
     await flushPromises()
 
+    expect(wrapper.getComponent({ name: 'AddBookModal' }).exists()).toBe(true)
     expect(wrapper.getComponent({ name: 'AddBookModal' }).exists()).toBe(true)
     expect(wrapper.getComponent({ name: 'AlertComponent' }).exists()).toBe(true)
   })
