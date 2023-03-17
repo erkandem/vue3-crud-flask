@@ -4,6 +4,8 @@ import { backendSchema } from '@/utils/backendUtils'
 import { constants, apiStatuses } from '@/utils/constants'
 import { ref, onMounted } from 'vue'
 import AddBookModal from '@/components/AddBookModal.vue'
+import EditBookModal from '@/components/EditBookModal.vue'
+
 import AlertComponent from '@/components/AlertComponent.vue'
 
 const books = ref([])
@@ -11,6 +13,8 @@ const apiStatusMessage = ref('')
 const apiStatus = ref(apiStatuses.neutral)
 
 const showAddBookModal = ref(false)
+const showEditBookModal = ref(false)
+const bookBeingEdited = ref({})
 
 const getBooks = () => {
   axios
@@ -64,6 +68,43 @@ const dismissAlert = () => {
   apiStatusMessage.value = ''
   apiStatus.value = apiStatuses.neutral
 }
+
+const editBook = (book) => {
+  /* connector between the individual book and the EditBookModal Component */
+  showEditBookModal.value = true
+  bookBeingEdited.value = book
+}
+const cancelEditBookHandler = () => {
+  showEditBookModal.value = false
+  bookBeingEdited.value = {}
+}
+const submitEditBookHandler = (book) => {
+  showEditBookModal.value = false
+  bookBeingEdited.value = {}
+  updateBook(book)
+}
+
+const updateBook = (book) => {
+  axios
+    .put(backendSchema.getBookEditRouteURL(book.id), book)
+    .then(() => {
+      apiStatusMessage.value = constants.successfulPutApiMessage
+      apiStatus.value = apiStatuses.success
+    })
+    .catch((error) => {
+      if (error.message === 'Network Error') {
+        apiStatusMessage.value = constants.networkFailedPutApiMessage
+      } else {
+        apiStatusMessage.value = constants.failedPutApiMessage
+      }
+      apiStatus.value = apiStatuses.error
+      console.log(String(error))
+    })
+    .finally(() => {
+      getBooks()
+    })
+}
+
 onMounted(getBooks)
 </script>
 
@@ -107,7 +148,9 @@ onMounted(getBooks)
             <td v-else>{{ constants.noString }}</td>
             <td>
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-warning btn-sm">Update</button>
+                <button type="button" class="btn btn-warning btn-sm" v-on:click="editBook(book)">
+                  Update
+                </button>
                 <button type="button" class="btn btn-danger btn-sm">Delete</button>
               </div>
             </td>
@@ -120,5 +163,12 @@ onMounted(getBooks)
       v-on:submitAddBook="submitAddBook"
       v-on:cancelAddBook="cancelAddBook"
     ></AddBookModal>
+    <EditBookModal
+      v-bind:bookToBeEdited="bookBeingEdited"
+      v-if="showEditBookModal"
+      v-on:submitEditBook="submitEditBookHandler"
+      v-on:cancelEditBook="cancelEditBookHandler"
+    >
+    </EditBookModal>
   </div>
 </template>

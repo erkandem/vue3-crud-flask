@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { shallowMount } from '@vue/test-utils'
-import EditBookModal from '@/componentns/EditBookModal.vue'
+import EditBookModal from '@/components/EditBookModal.vue'
 
 describe('EditBookModal.vue', () => {
   it('is rendering the edit form', () => {
@@ -32,12 +32,12 @@ describe('EditBookModal.vue', () => {
     // implicitly check the order of the input elements
     const inputs = wrapper.findAll('form input')
     expect(inputs.length).toBe(3)
-    expect(inputs[0].element.value).toBe(sampleBook.author)
-    expect(inputs[1].element.value).toMatch(sampleBook.title)
+    expect(inputs[0].element.value).toBe(sampleBook.title)
+    expect(inputs[1].element.value).toBe(sampleBook.author)
     expect(inputs[2].element.checked).toBeTruthy()
 
     // inspect the buttons
-    const buttons = wrapper.findAll('buttons')
+    const buttons = wrapper.findAll('button')
     expect(buttons.length).toBe(2)
     expect(buttons[0].text()).toMatch('Update')
     expect(buttons[1].text()).toMatch('Cancel')
@@ -57,20 +57,24 @@ describe('EditBookModal.vue dynamic', () => {
     }
     const editedTitle = 'edited title'
     const editPayloadExpectation = Object.assign({}, sampleBook)
-
+    editPayloadExpectation.title = editedTitle
     const wrapper = shallowMount(EditBookModal, {
       propsData: {
         bookToBeEdited: sampleBook
       }
     })
 
-    await wrapper.find('#form-title-input').setValue(editedTitle)
-    wrapper.find('#edit-book-modal-submit-button').trigger('click')
+    await wrapper.find('#edit-book-form-title-input').setValue(editedTitle)
+    await wrapper.find('#edit-book-modal-submit-button').trigger('click')
 
     // inspect the custom event
     expect(wrapper.emitted('submitEditBook')).toBeTruthy()
     expect(wrapper.emitted('submitEditBook').length).toBe(1)
-    expect(wrapper.emitted('submitEditBook')[0]).toEqual(editPayloadExpectation)
+    expect(wrapper.emitted('submitEditBook')[0]).toEqual(
+      // for some reason, the arguments to emited events are warpped in an array
+      // I guess it's like args being passed as a tuple in python
+      [editPayloadExpectation]
+    )
   })
   it('handles a cancel button click event', async () => {
     const sampleBook = {

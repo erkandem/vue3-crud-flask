@@ -7,5 +7,8 @@ export const backendSchema = {
   },
   getBooksRouteURL() {
     return this.baseUrl + this.booksEndpoint
+  },
+  getBookEditRouteURL(bookId) {
+    return `${this.baseUrl}${this.booksEndpoint}/${bookId}`
   }
 }

@@ -344,7 +344,7 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
 
 ### Client Side
 
-#### Outline
+#### Outline on the Blog
 
 - Add modal and form
 - Handle update button click
@@ -352,11 +352,18 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
 - Alert user
 - Handle cancel button click
 
-#### Refactoring Task
-
- - the form at the core of the modal for the edit and the add component can
-   be pulled out 
-
+#### Doing it
+ - Pulled out the CSS which enables the modal
+ - creating a form component isn't that trivial bc e.g. the id attrs of the 
+   modal elements
+ - TDD enables rethinking the names of the functions etc
+ - forgot to write some tests and fixed/refactored many
+ - setting the value of an input element must be `await`ed
+ - same for triggering a `click` event which must be `await`ed as well
+ - we don't need to specify the arguments in the html on connecting emits with their respective handler
+   put the handlers need to have the arguments as a part of the code
+ - Why did the tutorial within `initForm` combine the clearing of the `AddBookForm` and the `editForm`?
+ - Drawing a schema would help a lot. Writing the client code was quite something; even with the tests.
 
 #### Extras
 **Copying JS vars/objects:**
@@ -366,4 +373,4 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
    - for shallow copies `Object.assign({}, objectToBeCopied)`
    - for nested objects `structuredClone(objectToBeCopied)`
    - related: "subclass" creation `Object.create(objectToBeCopied)`
-     the properties and object mehtods will be available in `__proto__`
+     the properties and object methods will be available in `__proto__`

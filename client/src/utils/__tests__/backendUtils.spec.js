@@ -12,4 +12,11 @@ describe('backendUtils.js', () => {
     expectTypeOf(expectation).toBeString()
     expect(backendSchema.getBooksRouteURL()).toMatch(expectation)
   })
+
+  it('individual book endpoint is composed correctly', () => {
+    const bookId = '15'
+    const expectation = backendSchema.baseUrl + backendSchema.booksEndpoint + '/' + bookId
+    expectTypeOf(expectation).toBeString()
+    expect(backendSchema.getBookEditRouteURL(bookId)).toMatch(expectation)
+  })
 })

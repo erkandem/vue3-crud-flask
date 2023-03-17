@@ -5,7 +5,10 @@ export const constants = {
   networkFailedGetAPIMessage: 'The books could not be fetched. Backend could not be reached.',
   successfulPostApiMessage: 'Book successfully added!',
   failedPostApiMessage: 'Could not add book!',
-  networkFailedPostApiMessage: 'Could not add book!. Backend could not be reached.'
+  networkFailedPostApiMessage: 'Could not add book! Backend could not be reached.',
+  successfulPutApiMessage: 'Book successfully updated!',
+  failedPutApiMessage: 'Could not update book!',
+  networkFailedPutApiMessage: 'Could not edit book! Backend could not be reached.'
 }
 
 export const apiStatuses = {
