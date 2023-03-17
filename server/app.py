@@ -24,7 +24,13 @@ BOOKS = [
         }
     ]
 
-BOOK_SCHEMA = {
+
+def get_book_ind(book_id: str) -> int:
+    """Assumes that the passed `book_id` is present in `BOOKS` """
+    return [ind for ind, book in enumerate(BOOKS) if book["id"] == book_id][0]
+
+
+BOOK_SCHEMA_POST = {
     "title": str,
     "author": str,
     "read": bool
@@ -64,14 +70,14 @@ def validate_put_book(incoming):
 def validate_book(incoming):
     if not isinstance(incoming, dict):
         return False
-    if not sorted(list(incoming)) == sorted(list(BOOK_SCHEMA)):
+    if not sorted(list(incoming)) == sorted(list(BOOK_SCHEMA_POST)):
         return False
-    if not all(isinstance(incoming[key], BOOK_SCHEMA[key]) for key in list(BOOK_SCHEMA)):
+    if not all(isinstance(incoming[key], BOOK_SCHEMA_POST[key]) for key in list(BOOK_SCHEMA_POST)):
         return False
     return True
 
 
-@app.route("/ping", methods=["GET"])
+@app.route("/ping", methods=[HTTPMethod.GET])
 def ping_pong():
     return {"message": "pong!"}
 
@@ -96,20 +102,29 @@ def books_route():
         }
 
 
-@app.route("/books/<string:book_id>", methods=["PUT"])
+@app.route("/books/<string:book_id>", methods=[HTTPMethod.PUT, HTTPMethod.DELETE])
 def book_route(book_id):
-    if book_id not in [x["id"] for x in BOOKS]:
-        return {"status": "error", "message": "Book not in DB."}, HTTPStatus.BAD_REQUEST
-    if validate_put_book(request.json):
-        # yes, this is O(n). in reality, we would hit a hash O(0) instead of this data structure
-        ind = [ind for ind, book in enumerate(BOOKS) if book["id"] == book_id][0]
-        data = request.json
-        data.update({"id": book_id})  # TODO: add read-only flag to schema
-        BOOKS[ind] = data
-        return {"status": "success", "message": "Updated book."}, 200
-    # TODO: should add a more specific reason why the validation failed
-    #       I'm so spoiled and should be thankful to django rest framework
-    return {"status": "error", "message": "Validation failed."}, HTTPStatus.BAD_REQUEST
+    is_not_in_database = book_id not in [x["id"] for x in BOOKS]
+    if request.method == HTTPMethod.PUT:
+        if is_not_in_database:
+            return {"status": "error", "message": "Book not in DB."}, HTTPStatus.BAD_REQUEST
+        if validate_put_book(request.json):
+            # yes, this is O(n). in reality, we would hit a hash O(0) instead of this data structure
+            ind = get_book_ind(book_id)
+            data = request.json
+            data.update({"id": book_id})  # TODO: add read-only flag to schema
+            BOOKS[ind] = data
+            return {"status": "success", "message": "Updated book."}, 200
+        # TODO: should add a more specific reason why the validation failed
+        #       I'm so spoiled and should be thankful to django rest framework
+        return {"status": "error", "message": "Validation failed."}, HTTPStatus.BAD_REQUEST
+    elif request.method == HTTPMethod.DELETE:
+        if is_not_in_database:
+            return '', HTTPStatus.NOT_FOUND
+        else:
+            ind = get_book_ind(book_id)
+            BOOKS.pop(ind)
+            return '', HTTPStatus.ACCEPTED
 
 
 if __name__ == "__main__":
