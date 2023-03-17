@@ -245,7 +245,7 @@ def test_put_route_fails_because_body_is_partial(
         monkeypatch,
 ):
     books = [{
-        "id": str(uuid4),
+        "id": str(uuid4()),
         "title": "some title",
         "author": "Robert McBurger",
         "read": False
@@ -267,3 +267,42 @@ def test_put_route_fails_because_body_is_partial(
     }
     assert len(books) == 1
     assert books[0] != modified_book
+
+
+def test_delete_book_is_successful(
+        client,
+        monkeypatch,
+):
+    books = [{
+        "id": str(uuid4()),
+        "title": "some title",
+        "author": "Robert McBurger",
+        "read": False
+    }]
+    assert len(books) == 1
+    monkeypatch.setattr(app, "BOOKS", books)
+    response = client.delete(f"/books/{books[0]['id']}")
+    assert response.status_code == HTTPStatus.ACCEPTED
+
+    assert len(books) == 0
+
+
+def test_delete_book_fails_not_found(
+        client,
+        monkeypatch,
+):
+    books = [{
+        "id": str(uuid4()),
+        "title": "some title",
+        "author": "Robert McBurger",
+        "read": False
+    }]
+    an_other_id = str(uuid4())
+    assert len(books) == 1
+    assert an_other_id != books[0]["id"]
+    monkeypatch.setattr(app, "BOOKS", books)
+
+    response = client.delete(f"/books/{an_other_id}")
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert len(books) == 1

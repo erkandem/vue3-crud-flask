@@ -380,3 +380,7 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
  - rename e.g. editBook to onEditBookHandler
  - add more specific details to the id of the elements in the AddBookModal component
    since the ones there might be to general
+
+## 12 DELETE Route
+
+### server side
