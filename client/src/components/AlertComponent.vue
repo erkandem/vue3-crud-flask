@@ -18,7 +18,7 @@ const getClassesForAlert = computed(() => {
   return `alert ${bootStrapAlertClasses[props.alertStatus]}`
 })
 
-const dismissAlert = () => {
+const dismissAlertEmitter = () => {
   emits('dismissAlert')
 }
 </script>
@@ -30,7 +30,7 @@ const dismissAlert = () => {
       </strong>
       <button
         v-if="alertMessage"
-        v-on:click="dismissAlert"
+        v-on:click="dismissAlertEmitter"
         type="button"
         class="close"
         data-dismiss="alert"

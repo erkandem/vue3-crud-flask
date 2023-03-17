@@ -64,12 +64,12 @@ const submitAddBook = (data) => {
   addBook(data)
 }
 
-const dismissAlert = () => {
+const dismissAlertHandler = () => {
   apiStatusMessage.value = ''
   apiStatus.value = apiStatuses.neutral
 }
 
-const editBook = (book) => {
+const editBookHandler = (book) => {
   /* connector between the individual book and the EditBookModal Component */
   showEditBookModal.value = true
   bookBeingEdited.value = book
@@ -128,7 +128,7 @@ onMounted(getBooks)
       <AlertComponent
         v-bind:alertMessage="apiStatusMessage"
         v-bind:alertStatus="apiStatus"
-        v-on:dismissAlert="dismissAlert"
+        v-on:dismissAlert="dismissAlertHandler"
       />
       <br />
       <table class="table table-hover">
@@ -148,7 +148,11 @@ onMounted(getBooks)
             <td v-else>{{ constants.noString }}</td>
             <td>
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-warning btn-sm" v-on:click="editBook(book)">
+                <button
+                  type="button"
+                  class="btn btn-warning btn-sm"
+                  v-on:click="editBookHandler(book)"
+                >
                   Update
                 </button>
                 <button type="button" class="btn btn-danger btn-sm">Delete</button>

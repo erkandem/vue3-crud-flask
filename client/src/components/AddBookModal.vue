@@ -3,16 +3,16 @@ import { ref } from 'vue'
 
 const emit = defineEmits(['submitAddBook', 'cancelAddBook'])
 
-const onReset = () => {
-  initForm()
+const onResetEmitter = () => {
   emit('cancelAddBook')
+  initForm()
 }
 const addBookForm = ref({
   title: '',
   author: '',
   read: false
 })
-const onSubmit = () => {
+const onSubmitEmitter = () => {
   emit('submitAddBook', {
     title: addBookForm.value.title,
     author: addBookForm.value.author,
@@ -27,14 +27,14 @@ const initForm = () => {
 }
 </script>
 <template>
-  <div class="not-bootstrap-modal-backdrop" v-on:click="onReset">
+  <div class="not-bootstrap-modal-backdrop" v-on:click="onResetEmitter">
     <div class="not-bootstrap-modal" v-on:click.stop="">
       <form>
         <h3>Add a Book</h3>
         <div class="form-group" id="form-title-group">
-          <label for="form-title-input">Title:</label>
+          <label for="add-book-form-title-input">Title:</label>
           <input
-            id="form-title-input"
+            id="add-book-form-title-input"
             type="text"
             class="form-control"
             v-model="addBookForm.title"
@@ -45,7 +45,7 @@ const initForm = () => {
         <div class="form-group" id="form-author-group">
           <label for="form-author-input">Author:</label>
           <input
-            id="form-author-input"
+            id="add-book-form-author-input"
             type="text"
             class="form-control"
             v-model="addBookForm.author"
@@ -55,19 +55,19 @@ const initForm = () => {
 
         <div class="form-check" id="form-read-group">
           <input
-            id="form-read-input"
+            id="add-book-form-read-input"
             type="checkbox"
             v-model="addBookForm.read"
             class="form-check-input"
           />
-          <label class="form-check-label" for="form-read-input">Read?</label>
+          <label class="form-check-label" for="add-book-form-read-input">Read?</label>
         </div>
-        <div class="form-group" id="form-button-group">
+        <div class="form-group" id="add-book-form-button-group">
           <button
             id="add-book-modal-submit-button"
             type="submit"
             class="btn btn-primary"
-            v-on:click.prevent="onSubmit"
+            v-on:click.prevent="onSubmitEmitter"
           >
             Submit
           </button>
@@ -75,7 +75,7 @@ const initForm = () => {
             id="add-book-modal-cancel-button"
             type="reset"
             class="btn btn-danger"
-            v-on:click="onReset"
+            v-on:click="onResetEmitter"
           >
             Cancel
           </button>

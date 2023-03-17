@@ -433,7 +433,7 @@ describe('BooksComponent.vue alert sub component', () => {
     wrapper.vm.apiStatusMessage = 'message'
     wrapper.vm.apiStatus = 'status'
 
-    wrapper.vm.dismissAlert()
+    wrapper.vm.dismissAlertHandler()
 
     expect(wrapper.vm.apiStatusMessage).toBe('')
     expect(wrapper.vm.apiStatus).toBe('')

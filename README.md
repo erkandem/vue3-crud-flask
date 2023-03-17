@@ -374,3 +374,9 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
    - for nested objects `structuredClone(objectToBeCopied)`
    - related: "subclass" creation `Object.create(objectToBeCopied)`
      the properties and object methods will be available in `__proto__`
+
+#### Refactoring
+ - rename e.g. onSubmit to onSubmitHandler
+ - rename e.g. editBook to onEditBookHandler
+ - add more specific details to the id of the elements in the AddBookModal component
+   since the ones there might be to general

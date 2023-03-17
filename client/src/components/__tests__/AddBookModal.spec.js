@@ -38,9 +38,9 @@ describe('AddBookModal.vue', () => {
       read: true
     }
     const wrapper = shallowMount(AddBookModal)
-    await wrapper.find('#form-title-input').setValue(sampleFormData.title)
-    await wrapper.find('#form-author-input').setValue(sampleFormData.author)
-    await wrapper.find('#form-read-input').setChecked()
+    await wrapper.find('#add-book-form-title-input').setValue(sampleFormData.title)
+    await wrapper.find('#add-book-form-author-input').setValue(sampleFormData.author)
+    await wrapper.find('#add-book-form-read-input').setChecked()
 
     await wrapper.find('#add-book-modal-submit-button').trigger('click')
 
