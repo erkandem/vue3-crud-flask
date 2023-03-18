@@ -1,4 +1,5 @@
 from http import HTTPStatus, HTTPMethod
+from typing import Any
 from uuid import uuid4
 from flask import Flask, request
 from flask_cors import CORS
@@ -48,6 +49,16 @@ app.config.from_object(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
+def add_book(book: dict[str, Any]):
+    book_ = {
+        "id": str(uuid4()),
+        "title": book["title"],
+        "author": book["author"],
+        "read": book["read"],
+    }
+    BOOKS.append(book_)
+
+
 def validate_put_book(incoming):
     if not isinstance(incoming, dict):
         return False
@@ -95,7 +106,7 @@ def books_route():
             return {"status": "error", "message": "validation failed"}, HTTPStatus.BAD_REQUEST
         if request.json in BOOKS:
             return {"status": "error", "message": "book already in books"}, HTTPStatus.BAD_REQUEST
-        BOOKS.append(request.json)
+        add_book(request.json)
         return {
             "status": "success",
             "message": "Book added!"

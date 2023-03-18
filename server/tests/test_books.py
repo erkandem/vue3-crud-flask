@@ -6,10 +6,17 @@ that's not the focus of the tutorial
 """
 
 from http import HTTPStatus
-from uuid import uuid4
-import pytest
+from uuid import uuid4, UUID
 
 import app
+
+
+def validate_uuid(uuid_to_test: str, version: int = 4) -> bool:
+    try:
+        uuid_obj = UUID(uuid_to_test, version=version)
+    except ValueError:
+        return False
+    return str(uuid_obj) == uuid_to_test
 
 
 def test_get_books(client, monkeypatch):
@@ -33,6 +40,7 @@ def test_get_books(client, monkeypatch):
 def test_post_books(client, monkeypatch):
     """test if our route to POST books resolves and adds a book"""
     books = [{
+        "id": "some id",
         "title": "some title",
         "author": "Robert McBurger",
         "read": False
@@ -53,7 +61,8 @@ def test_post_books(client, monkeypatch):
         "message": "Book added!",
     }
     assert len(books) == 2
-    assert books[1] == new_book
+    assert "id" in books[1]
+    assert validate_uuid(books[1]["id"])
 
 
 def test_post_books_fails_missing_key(client, monkeypatch):

@@ -105,6 +105,26 @@ const updateBook = (book) => {
     })
 }
 
+const deleteBookHandler = (book) => {
+  axios
+    .delete(backendSchema.getBookEditRouteURL(book.id))
+    .then(() => {
+      apiStatus.value = apiStatuses.success
+      apiStatusMessage.value = constants.successfulDeleteApiMessage
+    })
+    .catch((error) => {
+      if (error.message === 'Network Error') {
+        apiStatusMessage.value = constants.networkFailedDeleteApiMessage
+      } else {
+        apiStatusMessage.value = constants.failedDeleteApiMessage
+      }
+      apiStatus.value = apiStatuses.error
+      console.log(String(error))
+    })
+    .finally(() => {
+      getBooks()
+    })
+}
 onMounted(getBooks)
 </script>
 
@@ -155,7 +175,13 @@ onMounted(getBooks)
                 >
                   Update
                 </button>
-                <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  v-on:click="deleteBookHandler(book)"
+                >
+                  Delete
+                </button>
               </div>
             </td>
           </tr>

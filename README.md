@@ -384,3 +384,10 @@ https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2
 ## 12 DELETE Route
 
 ### server side
+
+### client side
+
+Does it make sense to request the books from the server if just encountered an error;
+specifically on a network error?
+
+Found and fixed a bug, where I forgot to assign an ID to a new book record.

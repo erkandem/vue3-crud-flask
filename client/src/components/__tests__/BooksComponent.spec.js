@@ -341,7 +341,7 @@ describe('BooksComponent.vue handles editing a book', () => {
 })
 
 describe('BooksComponent.vue handles the delete button', () => {
-  it('successfully delete a book', async () => {
+  it('successfully deletes a book', async () => {
     const sampleBooksResponse = getSampleBooksGetResponse()
     const numberOfBooks = sampleBooksResponse.books.length
     const bookId = sampleBooksResponse.books[0].id
@@ -352,13 +352,11 @@ describe('BooksComponent.vue handles the delete button', () => {
     expect(wrapper.vm.books.length).toBe(numberOfBooks)
     const buttons = wrapper.findAll('tbody button')
     expect(buttons.length).toBe(
-      (
-        1 // update button
-       + 1 // delete button
-      )
-      * numberOfBooks
+      (1 + // update button
+        1) * // delete button
+        numberOfBooks
     )
-    expect(buttons[1].text()).toMatch("Delete")
+    expect(buttons[1].text()).toMatch('Delete')
 
     await buttons[1].trigger('click')
     await flushPromises()
@@ -367,17 +365,16 @@ describe('BooksComponent.vue handles the delete button', () => {
     expect(axiosMock.history.delete.length).toBe(1)
     expect(axiosMock.history.delete[0].method).toMatch('delete')
     expect(axiosMock.history.delete[0].url).toMatch(backendSchema.getBookEditRouteURL(bookId))
-    expect(axiosMock.history.delete[0].data).toBe('')
+    expect(axiosMock.history.delete[0].data).toBeUndefined()
 
-    // inspect the books property of the component
-    expect(wrapper.vm.books.length).toBe(1)
-    expect(wrapper.vm.books.map(elm => elm.id)).not.toContain(bookId)
+    // assert that the second GET request was triggered to update the component
+    expect(axiosMock.history.get.length).toBe(2)
 
     // check the side effect on the alert component
     wrapper.vm.apiStatus = apiStatuses.success
     wrapper.vm.apiStatusMessage = constants.successfulDeleteApiMessage
   })
-    it('delete failed due to network', async () => {
+  it('delete failed due to network', async () => {
     const sampleBooksResponse = getSampleBooksGetResponse()
     const numberOfBooks = sampleBooksResponse.books.length
     const bookId = sampleBooksResponse.books[0].id
@@ -388,13 +385,11 @@ describe('BooksComponent.vue handles the delete button', () => {
     expect(wrapper.vm.books.length).toBe(numberOfBooks)
     const buttons = wrapper.findAll('tbody button')
     expect(buttons.length).toBe(
-      (
-        1 // update button
-       + 1 // delete button
-      )
-      * numberOfBooks
+      (1 + // update button
+        1) * // delete button
+        numberOfBooks
     )
-    expect(buttons[1].text()).toMatch("Delete")
+    expect(buttons[1].text()).toMatch('Delete')
 
     await buttons[1].trigger('click')
     await flushPromises()
@@ -403,11 +398,11 @@ describe('BooksComponent.vue handles the delete button', () => {
     expect(axiosMock.history.delete.length).toBe(1)
     expect(axiosMock.history.delete[0].method).toMatch('delete')
     expect(axiosMock.history.delete[0].url).toMatch(backendSchema.getBookEditRouteURL(bookId))
-    expect(axiosMock.history.delete[0].data).toBe('')
+    expect(axiosMock.history.delete[0].data).toBeUndefined()
 
     // inspect the books property of the component
     expect(wrapper.vm.books.length).toBe(2)
-    expect(wrapper.vm.books.map(elm => elm.id)).toContain(bookId)
+    expect(wrapper.vm.books.map((elm) => elm.id)).toContain(bookId)
 
     // check the side effect on the alert component
     wrapper.vm.apiStatus = apiStatuses.error
@@ -424,13 +419,11 @@ describe('BooksComponent.vue handles the delete button', () => {
     expect(wrapper.vm.books.length).toBe(numberOfBooks)
     const buttons = wrapper.findAll('tbody button')
     expect(buttons.length).toBe(
-      (
-        1 // update button
-       + 1 // delete button
-      )
-      * numberOfBooks
+      (1 + // update button
+        1) * // delete button
+        numberOfBooks
     )
-    expect(buttons[1].text()).toMatch("Delete")
+    expect(buttons[1].text()).toMatch('Delete')
 
     await buttons[1].trigger('click')
     await flushPromises()
@@ -439,11 +432,11 @@ describe('BooksComponent.vue handles the delete button', () => {
     expect(axiosMock.history.delete.length).toBe(1)
     expect(axiosMock.history.delete[0].method).toMatch('delete')
     expect(axiosMock.history.delete[0].url).toMatch(backendSchema.getBookEditRouteURL(bookId))
-    expect(axiosMock.history.delete[0].data).toBe('')
+    expect(axiosMock.history.delete[0].data).toBeUndefined()
 
     // inspect the books property of the component
     expect(wrapper.vm.books.length).toBe(2)
-    expect(wrapper.vm.books.map(elm => elm.id)).toContain(bookId)
+    expect(wrapper.vm.books.map((elm) => elm.id)).toContain(bookId)
 
     // check the side effect on the alert component
     wrapper.vm.apiStatus = apiStatuses.error
