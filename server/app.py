@@ -124,7 +124,7 @@ def book_route(book_id):
         else:
             ind = get_book_ind(book_id)
             BOOKS.pop(ind)
-            return '', HTTPStatus.ACCEPTED
+            return '', HTTPStatus.NO_CONTENT
 
 
 if __name__ == "__main__":

@@ -282,7 +282,7 @@ def test_delete_book_is_successful(
     assert len(books) == 1
     monkeypatch.setattr(app, "BOOKS", books)
     response = client.delete(f"/books/{books[0]['id']}")
-    assert response.status_code == HTTPStatus.ACCEPTED
+    assert response.status_code == HTTPStatus.NO_CONTENT
 
     assert len(books) == 0
 

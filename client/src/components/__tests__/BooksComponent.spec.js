@@ -339,6 +339,118 @@ describe('BooksComponent.vue handles editing a book', () => {
     expect(wrapper.vm.apiStatus).toMatch(apiStatuses.error)
   })
 })
+
+describe('BooksComponent.vue handles the delete button', () => {
+  it('successfully delete a book', async () => {
+    const sampleBooksResponse = getSampleBooksGetResponse()
+    const numberOfBooks = sampleBooksResponse.books.length
+    const bookId = sampleBooksResponse.books[0].id
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, sampleBooksResponse)
+    axiosMock.onDelete(backendSchema.getBookEditRouteURL(bookId)).reply(204, sampleBooksResponse)
+    const wrapper = shallowMount(BooksComponent)
+    await flushPromises()
+    expect(wrapper.vm.books.length).toBe(numberOfBooks)
+    const buttons = wrapper.findAll('tbody button')
+    expect(buttons.length).toBe(
+      (
+        1 // update button
+       + 1 // delete button
+      )
+      * numberOfBooks
+    )
+    expect(buttons[1].text()).toMatch("Delete")
+
+    await buttons[1].trigger('click')
+    await flushPromises()
+
+    // inspect the axios mock
+    expect(axiosMock.history.delete.length).toBe(1)
+    expect(axiosMock.history.delete[0].method).toMatch('delete')
+    expect(axiosMock.history.delete[0].url).toMatch(backendSchema.getBookEditRouteURL(bookId))
+    expect(axiosMock.history.delete[0].data).toBe('')
+
+    // inspect the books property of the component
+    expect(wrapper.vm.books.length).toBe(1)
+    expect(wrapper.vm.books.map(elm => elm.id)).not.toContain(bookId)
+
+    // check the side effect on the alert component
+    wrapper.vm.apiStatus = apiStatuses.success
+    wrapper.vm.apiStatusMessage = constants.successfulDeleteApiMessage
+  })
+    it('delete failed due to network', async () => {
+    const sampleBooksResponse = getSampleBooksGetResponse()
+    const numberOfBooks = sampleBooksResponse.books.length
+    const bookId = sampleBooksResponse.books[0].id
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, sampleBooksResponse)
+    axiosMock.onDelete(backendSchema.getBookEditRouteURL(bookId)).networkError()
+    const wrapper = shallowMount(BooksComponent)
+    await flushPromises()
+    expect(wrapper.vm.books.length).toBe(numberOfBooks)
+    const buttons = wrapper.findAll('tbody button')
+    expect(buttons.length).toBe(
+      (
+        1 // update button
+       + 1 // delete button
+      )
+      * numberOfBooks
+    )
+    expect(buttons[1].text()).toMatch("Delete")
+
+    await buttons[1].trigger('click')
+    await flushPromises()
+
+    // inspect the axios mock
+    expect(axiosMock.history.delete.length).toBe(1)
+    expect(axiosMock.history.delete[0].method).toMatch('delete')
+    expect(axiosMock.history.delete[0].url).toMatch(backendSchema.getBookEditRouteURL(bookId))
+    expect(axiosMock.history.delete[0].data).toBe('')
+
+    // inspect the books property of the component
+    expect(wrapper.vm.books.length).toBe(2)
+    expect(wrapper.vm.books.map(elm => elm.id)).toContain(bookId)
+
+    // check the side effect on the alert component
+    wrapper.vm.apiStatus = apiStatuses.error
+    wrapper.vm.apiStatusMessage = constants.networkFailedDeleteApiMessage
+  })
+  it('delete fails', async () => {
+    const sampleBooksResponse = getSampleBooksGetResponse()
+    const numberOfBooks = sampleBooksResponse.books.length
+    const bookId = sampleBooksResponse.books[0].id
+    axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, sampleBooksResponse)
+    axiosMock.onDelete(backendSchema.getBookEditRouteURL(bookId)).reply(404)
+    const wrapper = shallowMount(BooksComponent)
+    await flushPromises()
+    expect(wrapper.vm.books.length).toBe(numberOfBooks)
+    const buttons = wrapper.findAll('tbody button')
+    expect(buttons.length).toBe(
+      (
+        1 // update button
+       + 1 // delete button
+      )
+      * numberOfBooks
+    )
+    expect(buttons[1].text()).toMatch("Delete")
+
+    await buttons[1].trigger('click')
+    await flushPromises()
+
+    // inspect the axios mock
+    expect(axiosMock.history.delete.length).toBe(1)
+    expect(axiosMock.history.delete[0].method).toMatch('delete')
+    expect(axiosMock.history.delete[0].url).toMatch(backendSchema.getBookEditRouteURL(bookId))
+    expect(axiosMock.history.delete[0].data).toBe('')
+
+    // inspect the books property of the component
+    expect(wrapper.vm.books.length).toBe(2)
+    expect(wrapper.vm.books.map(elm => elm.id)).toContain(bookId)
+
+    // check the side effect on the alert component
+    wrapper.vm.apiStatus = apiStatuses.error
+    wrapper.vm.apiStatusMessage = constants.failedDeleteApiMessage
+  })
+})
+
 describe('BooksComponent.vue emit handlers', () => {
   it('handle a cancel event', () => {
     const wrapper = shallowMount(BooksComponent)
