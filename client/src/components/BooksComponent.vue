@@ -131,7 +131,7 @@ onMounted(getBooks)
 <template>
   <div class="row">
     <div class="col-sm-10">
-      <h1>Books</h1>
+      <h2>Books</h2>
       <hr />
       <br />
       <br />

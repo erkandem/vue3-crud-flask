@@ -5,7 +5,7 @@ import HomeComponent from '@/components/HomeComponent.vue'
 describe('HomeComponent.vue', () => {
   it('renders the component', () => {
     const wrapper = shallowMount(HomeComponent)
-    const h3 = wrapper.find('h3')
-    expect(h3.text()).toMatch('Le Home')
+    const h2 = wrapper.find('h2')
+    expect(h2.text()).toMatch('Le Home')
   })
 })

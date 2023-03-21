@@ -21,7 +21,7 @@ describe('App.vue', () => {
       }
     })
     expect(wrapper.getComponent({ name: 'HeaderComponent' }).exists()).toBeTruthy()
-    expect(wrapper.getComponent({ name: 'CoreComponent' }).exists()).toBeTruthy()
+    expect(wrapper.getComponent({ name: 'RouterView' }).exists()).toBeTruthy()
     expect(wrapper.getComponent({ name: 'FooterComponent' }).exists()).toBeTruthy()
   })
 
@@ -34,7 +34,6 @@ describe('App.vue', () => {
     })
 
     expect(wrapper.getComponent({ name: 'HomeComponent' }).exists()).toBeTruthy()
-    expect(wrapper.find('h3').text()).toMatch('Le Home')
   })
 
   it('renders the ping view', async () => {
@@ -46,6 +45,7 @@ describe('App.vue', () => {
     })
     expect(wrapper.getComponent({ name: 'PingComponent' }).exists()).toBeTruthy()
   })
+
   it('renders the books view', async () => {
     axiosMock.onGet(backendSchema.getBooksRouteURL()).reply(200, { status: 'success', books: [] })
     await router.push('/books')

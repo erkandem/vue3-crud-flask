@@ -23,7 +23,8 @@ const getPing = () => {
 onMounted(getPing)
 </script>
 <template>
-  <div class="container">
+  <div>
+    <h2> Le Ping </h2>
     <button type="button" class="btn btn-primary" id="ping-response">
       {{ pingResponseData }}
     </button>
